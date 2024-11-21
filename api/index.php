@@ -1,18 +1,5 @@
-<?php
-// Exemple d'API qui renvoie un message
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+<?php 
 
-// Réponse de l'API sous forme de JSON
-$response = [
-    'status' => 'success',
-    'message' => 'Bienvenue sur l\'API !',
-    'data' => [
-        'user' => 'Jean Dupont',
-        'role' => 'admin',
-        'last_login' => '2024-10-06'
-    ]
-];
+session_start();
 
-echo json_encode($response);
-exit;
+require_once './config/config.php';

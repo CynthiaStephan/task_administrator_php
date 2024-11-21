@@ -175,3 +175,24 @@ Voici les informations dont vous disposez pour concevoir les tables :
 1. **Code PHP** contenant l’API RESTful qui permet de réaliser les fonctionnalités décrites ci-dessus.
 2. **Fichier SQL** avec les commandes SQL nécessaires pour créer la base de données.
 3. Un fichier **README.md** expliquant comment configurer et utiliser l'API (pré-requis, installation, etc.).
+
+
+``` php
+// Exemple d'API qui renvoie un message
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+
+// Réponse de l'API sous forme de JSON
+$response = [
+    'status' => 'success',
+    'message' => 'Bienvenue sur l\'API !',
+    'data' => [
+        'user' => 'Jean Dupont',
+        'role' => 'admin',
+        'last_login' => '2024-10-06'
+    ]
+];
+
+echo json_encode($response);
+exit;
+```
