@@ -3,16 +3,16 @@
 /**
  * Adds a new user to the database.
  *
- * This function inserts a new user record into the `users` table with the provided
+ * This function inserts a new user into the `users` table with the provided
  * username and hashed password.
  *
- * @param string $username The username for the new user.
- * @param string $password The hashed password for the new user.
+ * @param string $username The username of the user to be added.
+ * @param string $password The hashed password of the user.
  * @param PDO $pdo The PDO instance used to interact with the database.
- * 
+ *
  * @return void This function does not return any value.
- * 
- * @throws Exception If an error occurs while inserting the user, an exception is thrown.
+ *
+ * @throws Exception Throws an exception if there is an error during the database operation.
  */
 function addUser(string $username, string $password, PDO $pdo): void {
     try {

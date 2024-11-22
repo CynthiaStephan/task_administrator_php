@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Retrieves user information based on their username.
+ * Retrieves a user's data based on their username.
  *
- * This function executes an SQL query to search for a user in the `users` table
+ * This function executes a query to fetch the user's details from the database 
  * using the provided username.
  *
- * @param string $username The username to search for.
+ * @param string $username The username of the user to search for.
  * @param PDO $pdo The PDO instance used to interact with the database.
- * 
- * @return mixed Returns an associative array with the user's data if found.
- *               Returns an empty array if no user matches the given username.
+ *
+ * @return mixed Returns an associative array with the user's data if found, 
+ *               or `false` if no user is found or on error.
  */
 function getUser($username, $pdo): mixed {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");

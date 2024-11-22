@@ -1,16 +1,17 @@
 <?php
 /**
- * The function `getTasks` retrieves tasks associated with a specific user ID from a database using PDO
- * in PHP.
- * 
- * @param int user_id 
- * @param PDO pdo
- * 
- * @return array An array of tasks associated with the specified user ID is being returned. Each task
- * is represented as an associative array containing task details.
+ * Retrieves all tasks for a specific user from the database.
+ *
+ * This function fetches all tasks associated with a specific user ID
+ * from the `tasks` table and returns them as an associative array.
+ *
+ * @param int $user_id The ID of the user whose tasks are to be fetched.
+ * @param PDO $pdo The PDO instance used to interact with the database.
+ *
+ * @return mixed Returns an associative array of tasks if found, or an empty array if no tasks are found.
  */
 
-function getTasks(int $user_id, PDO $pdo): array{
+function getTasks(int $user_id, PDO $pdo): mixed{
     $stmt = $pdo->prepare("SELECT * FROM tasks WHERE user_id = :user_id");
     $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
     $stmt->execute();
