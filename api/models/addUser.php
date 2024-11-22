@@ -33,6 +33,6 @@ function addUser(string $username, string $password, PDO $pdo): void {
         // Handle any errors, log them as needed
         error_log('Database error: ' . $e->getMessage());
         // Optionally, you can throw an exception or return an error message
-        throw new Exception("Error adding user to the database.");
+        throw new Exception("Erreur lors de l'ajout de l'utilisateur");
     }
 }

@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['user'] = [
                 'user_id' => $user['user_id'],
-                'username'=> $user['username'],
             ];
             http_response_code(200);
             $response['message'] = 'Connexion réussie';
@@ -35,4 +34,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 }
 echo json_encode($response);
-    exit;
+exit;
