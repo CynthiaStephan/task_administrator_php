@@ -6,63 +6,46 @@ require_once './models/getUser.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/x-www-form-urlencoded');
-
 
 $response = [
     'message' => 'Requête invalide',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérifier si le type de contenu est JSON
-    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-    if (strpos($contentType, 'application/json') !== false) {
-        // Décoder le contenu JSON brut
-        $rawData = file_get_contents('php://input');
-        $data = json_decode($rawData, true);
-
-        if (json_last_error() === JSON_ERROR_NONE) {
-            $_POST = $data; // Remplir $_POST avec les données JSON décodées
-        } else {
-            http_response_code(400);
-            echo json_encode(['message' => 'Données JSON invalides.']);
-            exit;
-        }
-    }
-
-    echo '<pre>';
-    echo "Méthode HTTP : {$_SERVER['REQUEST_METHOD']}\n";
-    echo "Contenu brut reçu :\n";
-    echo file_get_contents('php://input');
-    echo "\nTableau \$_POST :\n";
-    print_r($_POST);
-    echo '</pre>';
-    exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
     try {
-        // Vérifier si les paramètres 'username' et 'password' sont dans la requête POST
-        if (isset($_POST['username']) && isset($_POST['password'])) {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
+        // Lecture des données POST au format JSON ou x-www-form-urlencoded
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
 
+        if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
+            // Données envoyées au format JSON
+            $username = $data['username'] ?? null;
+            $password = $data['password'] ?? null;
+        } else {
+            // Données envoyées en x-www-form-urlencoded
+            $username = $_POST['username'] ?? null;
+            $password = $_POST['password'] ?? null;
+        }
+
+        // Vérifier si les paramètres sont fournis
+        if (!empty($username) && !empty($password)) {
+            // Appel à la fonction pour récupérer l'utilisateur
             $user = getUser($username, $pdo);
 
             if ($user && password_verify($password, $user['password'])) {
+                // Stockage de l'utilisateur en session
                 $_SESSION['user'] = [
                     'user_id' => $user['user_id'],
                 ];
                 http_response_code(200);
                 $response['message'] = 'Connexion réussie';
             } else {
-
+                // Identifiants incorrects
                 http_response_code(401);
                 $response['message'] = "Identifiants invalides";
             }
         } else {
-
+            // Paramètres manquants
             http_response_code(400);
             $response['message'] = "Paramètres manquants (username ou password)";
         }
@@ -73,6 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Retourner la réponse JSON
+// Retour de la réponse JSON
 echo json_encode($response);
 exit;
