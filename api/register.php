@@ -9,46 +9,44 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
 $response = [
-    'message' => 'Requête invalide',
+    'message'=> 'Requête invalide',
 ];
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $username = $_POST['username'] ?? null;
         $password = $_POST['password'] ?? null;
-
-        // Si les champs sont vides, renvoyer une erreur
-        if (empty($username) || empty($password)) {
+        // if empty throw error message
+        if(empty($username) || empty($password)) {
             throw new Exception("Tous les champs sont obligatoires.");
         }
-
-        // Vérifier si l'utilisateur existe déjà
+        // verify if user doesn't exist
         $user = getUser($username, $pdo);
 
-        if ($user) {
-            http_response_code(409); // Conflit
-            $response['message'] = "Ce nom d'utilisateur est déjà pris.";
+        if($user){
+            $message = "Ce nom d'utilisateur est deja pris.";
+            // The HTTP 409 Conflict. Conflicts are most likely to occur in response to a PUT request.
+            http_response_code(409);
+            $response['message'] = "Cet nom est déjà pris";
         } else {
-            // Hashage du mot de passe
-            $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
+            // hash the password
+            $password = password_hash($password, PASSWORD_DEFAULT, ['cost'=> 12]);
 
-            // Ajouter l'utilisateur
             addUser($username, $password, $pdo);
+            
             $_SESSION['user'] = [
-                'user_id' => $pdo->lastInsertId(),
+                'user_id' => $pdo ->lastInsertId(),
             ];
 
-            http_response_code(201); // Création réussie
+            http_response_code(200);
             $response['message'] = 'Inscription réussie.';
-            $response['data'] = ['user_id' => $_SESSION['user']['user_id']];
         }
+
+        
     } catch (Exception $err) {
         error_log($err->getMessage());
-        http_response_code(500); // Erreur serveur
+        http_response_code(500);
         $response['message'] = "Une erreur est survenue lors de l'inscription.";
     }
 }
-
-// Envoyer la réponse JSON
-echo json_encode($response);
-exit;
