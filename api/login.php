@@ -1,8 +1,8 @@
 <?php 
 
 session_start();
-require_once '../config/config.php';
-require_once '../models/getUser.php';
+require_once './config/config.php';
+require_once './models/getUser.php';
 
 $message = null;
 
