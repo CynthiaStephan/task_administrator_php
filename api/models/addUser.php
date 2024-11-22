@@ -1,11 +1,18 @@
 <?php
 
 /**
- * The function addUser inserts a new user with username and hashed password into a database using PDO in PHP.
+ * Adds a new user to the database.
+ *
+ * This function inserts a new user record into the `users` table with the provided
+ * username and hashed password.
+ *
+ * @param string $username The username for the new user.
+ * @param string $password The hashed password for the new user.
+ * @param PDO $pdo The PDO instance used to interact with the database.
  * 
- * @param string $username 
- * @param string $password (already hashed before calling this function)
- * @param PDO $pdo 
+ * @return void This function does not return any value.
+ * 
+ * @throws Exception If an error occurs while inserting the user, an exception is thrown.
  */
 function addUser(string $username, string $password, PDO $pdo): void {
     try {

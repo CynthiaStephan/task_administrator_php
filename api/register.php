@@ -5,7 +5,6 @@ require_once './config/config.php';
 require_once './models/addUser.php';
 require_once './models/getUser.php';
 
-header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
 $response = [
@@ -14,46 +13,43 @@ $response = [
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Récupérer les données de la requête via $_POST
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-
-        // Vérifier que les champs sont remplis
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        
         if (empty($username) || empty($password)) {
+            http_response_code(400);
             throw new Exception("Tous les champs sont obligatoires.");
         }
-
-        // does user exist? 
+        
+        // check if user exist
         $user = getUser($username, $pdo);
 
-        if ($user) {
-            http_response_code(409); // Conflit
+
+        if (!empty($user)) {
+            http_response_code(409);
             $response['message'] = "Ce nom d'utilisateur est déjà pris.";
         } else {
             // hash password
             $passwordHashed = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 
-            // Ajouter le nouvel utilisateur
-            addUser($username, $passwordHashed, $pdo);
-
-            // Démarrer la session de l'utilisateur
+            // send user info the the addUser function
+            addUser(username: $username, password: $passwordHashed, pdo: $pdo);
+            // save user_id into session data
             $_SESSION['user'] = [
                 'user_id' => $pdo->lastInsertId(),
             ];
 
-            http_response_code(201); // Créé
+            http_response_code(200);
             $response['message'] = 'Inscription réussie.';
         }
 
     } catch (Exception $err) {
-        // Enregistrer l'erreur dans les logs pour le débogage
         error_log($err->getMessage());
-        // Retourner un message d'erreur générique
-        http_response_code(500); // Erreur interne du serveur
+        http_response_code(500);
         $response['message'] = "Une erreur est survenue lors de l'inscription.";
     }
 }
 
-// Retourner la réponse JSON
+// sendback $response to the front
 echo json_encode($response);
 exit;
