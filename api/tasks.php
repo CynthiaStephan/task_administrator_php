@@ -4,6 +4,7 @@ session_start();
 require_once './config/config.php';
 require_once './models/getTasks.php';
 require_once './models/addTasks.php';
+require_once './models/deleteTask.php';
 
 header('Access-Control-Allow-Origin: *');
 
@@ -24,8 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         http_response_code(200);
         $response['message'] = "Tâche ajoutée avec succès";
 
-
-
     } catch (Exception $err) {
         error_log($err->getMessage());
         http_response_code(500);
@@ -37,8 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     try {
-        $input = file_get_contents("php://input");
-        parse_str($input, $data);
+        parse_str(file_get_contents('php://input'), $data);
         if (isset($data['task_id'])) {
             $task_id = (int) $data['task_id'];
             deleteTask($task_id, $pdo);
