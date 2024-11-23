@@ -19,8 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try{
 
         $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ??'');
-        
+        $description = trim($_POST['description'] ??'');        
         addTask($user_id, $title, $description, $pdo);
 
         http_response_code(200);
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Edit task
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "completed"){
     try{
         $task_id = trim($_POST['id'] ??'');
         $completed = trim($_POST['completed'] ??'');
@@ -85,7 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $tasks = getTasks($user_id, $pdo);
-        // TODO: Une fois que j'ai des tâches crée faire une boucle avec la réponse.
+        http_response_code(200);
+        $response = $tasks;
+        
     } catch (Exception $err) {
         error_log($err->getMessage());
         http_response_code(500);

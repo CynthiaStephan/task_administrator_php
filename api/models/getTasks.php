@@ -12,7 +12,12 @@
  */
 
 function getTasks(int $user_id, PDO $pdo): mixed{
-    $stmt = $pdo->prepare("SELECT * FROM tasks WHERE user_id = :user_id");
+    $stmt = $pdo->prepare("
+        SELECT task_id AS id, title, description, completed
+        FROM tasks 
+        WHERE user_id = :user_id
+        ORDER BY created_at DESC
+    ");
     $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
     $stmt->execute();
 
