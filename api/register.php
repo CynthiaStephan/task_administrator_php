@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // send user info the the addUser function
             addUser(username: $username, password: $passwordHashed, pdo: $pdo);
             // save user_id into session data
-            $_SESSION['user'] = [
+            $_SESSION = [
                 'user_id' => $pdo->lastInsertId(),
             ];
 

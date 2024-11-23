@@ -12,15 +12,15 @@ $response = [
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+
+
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? '');
         $user = getUser($username, $pdo);
         
         if ($user && password_verify($password, $user['password'])) {
 
-            $_SESSION['user'] = [
-                'user_id' => $user['user_id'],
-            ];
+            $_SESSION['user_id'] = $user['user_id'];
             http_response_code(200);
             $response['message'] = 'Connexion réussie';
         } else {

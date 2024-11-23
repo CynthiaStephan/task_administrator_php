@@ -9,15 +9,35 @@ require_once './models/editTask.php';
 
 header('Access-Control-Allow-Origin: *');
 
-$user_id = $_SESSION['user']['user_id'];
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(403);
+    echo json_encode(['message' => 'Utilisateur non connecté.']);
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+
+
 $response = [];
 
+// get tasks
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    try {
+        $tasks = getTasks($user_id, $pdo);
+        http_response_code(200);
+        $response = $tasks;
+        
+    } catch (Exception $err) {
+        error_log($err->getMessage());
+        http_response_code(500);
+        $response['message'] = "Une erreur est survenue lors de la récupération des tâches";
+    }
+}
 
 // add task
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try{
-
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ??'');        
         addTask($user_id, $title, $description, $pdo);
@@ -79,19 +99,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     }
 }
 
-
-// get tasks
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    try {
-        $tasks = getTasks($user_id, $pdo);
-        http_response_code(200);
-        $response = $tasks;
-        
-    } catch (Exception $err) {
-        error_log($err->getMessage());
-        http_response_code(500);
-        $response['message'] = "Une erreur est survenue lors de la récupération des tâches";
-    }
-}
 
 echo json_encode($response);
