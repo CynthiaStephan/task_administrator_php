@@ -34,13 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Edit task
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "completed"){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "complete"){
     try{
         $task_id = trim($_POST['id'] ??'');
         $completed = trim($_POST['completed'] ??'');
         $action = trim($_POST['action'] ??'');
 
-        if ($action === "completed") {
+        if ($action === "complete") {
             editTask($task_id, $completed, $pdo);
             http_response_code(200);
             $response['message'] = "Tâche mise à jour avec succès";
@@ -60,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     try {
         parse_str(file_get_contents('php://input'), $data);
-        if (isset($data['task_id'])) {
+        if (isset($data['id'])) {
 
-            $task_id = (int) $data['task_id'];
+            $task_id = (int) $data['id'];
             deleteTask($task_id, $pdo);
 
             http_response_code(200);
