@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $tasks = getTasks($user_id, $pdo);
         http_response_code(200);
-        $response = $tasks;
+        $response['tasks'] = $tasks;
         
     } catch (Exception $err) {
         error_log($err->getMessage());
@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 // add task
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try{
         $title = trim($_POST['title'] ?? '');
@@ -53,20 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Edit task
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "complete"){
     try{
         $task_id = trim($_POST['id'] ??'');
         $completed = trim($_POST['completed'] ??'');
         $action = trim($_POST['action'] ??'');
 
-        if ($action === "complete") {
-            editTask($task_id, $completed, $pdo);
-            http_response_code(200);
-            $response['message'] = "Tâche mise à jour avec succès";
-        } else {
-            throw new Exception("Error");
-        }
+        editTask($task_id, $completed, $pdo);
+        http_response_code(200);
+        $response['message'] = "Tâche mise à jour avec succès";
 
     } catch (Exception $err) {  
         error_log($err->getMessage());

@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $passwordHashed = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 
             // send user info the the addUser function
-            addUser(username: $username, password: $passwordHashed, pdo: $pdo);
+            addUser($username, $password, $pdo);
             // save user_id into session data
             $_SESSION = [
                 'user_id' => $pdo->lastInsertId(),
