@@ -13,7 +13,7 @@
 
 function getTasks(int $user_id, PDO $pdo): mixed{
     $stmt = $pdo->prepare("
-        SELECT *
+        SELECT task_id AS id, title, description, completed
         FROM tasks 
         WHERE user_id = :user_id
         ORDER BY created_at DESC

@@ -52,12 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Edit task
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "complete"){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === "complete"){
     try{
-        $task_id = trim($_POST['id'] ??'');
-        $completed = trim($_POST['completed'] ??'');
-        $action = trim($_POST['action'] ??'');
-
+        $task_id = intval($_POST['id']);
+        $completed = intval($_POST['completed']);
         editTask($task_id, $completed, $pdo);
         http_response_code(200);
         $response['message'] = "Tâche mise à jour avec succès";
@@ -71,20 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // Delete Task
 
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_GET['id'])) {
     try {
-        parse_str(file_get_contents('php://input'), $data);
-        if (isset($data['id'])) {
-
-            $task_id = (int) $data['id'];
+            $task_id = (int) $_GET['id'];
             deleteTask($task_id, $pdo);
 
             http_response_code(200);
             $response['message'] ="Tâche supprimée avec succès";
 
-        } else {
-            throw new Exception("Error");
-        }
 
     } catch (Exception $err) {
         error_log($err->getMessage());
